@@ -1,0 +1,27 @@
+export interface Category { id: number; name: string; slug: string; description: string | null; image_url: string | null; parent_id: number | null; is_active: boolean; sort_order: number }
+export interface ProductCardT { id: number; slug: string; name: string; brand: string | null; category_id: number; price_usd: string; sale_price_usd: string | null; effective_price_usd: string; available: number; in_stock: boolean; image_url: string | null; status: string; sku: string }
+export interface Page { items: ProductCardT[]; total: number; page: number; page_size: number }
+export interface Variant { id: number; sku: string; attributes: Record<string, string>; price_usd: string; sale_price_usd: string | null; available: number; in_stock: boolean }
+export interface ProductDetail extends ProductCardT { short_description: string | null; description: string | null; model: string | null; specs: Record<string, string>; warranty: string | null; category: { id: number; name: string; slug: string }; images: { id: number; url: string; alt: string | null }[]; variants: Variant[]; related: ProductCardT[]; dimensions: Record<string, string | null> }
+export interface Me { id: number; first_name: string; last_name: string; email: string; roles: string[]; permissions: string[]; must_change_password: boolean; csrf_token: string }
+
+export interface CartLine { id: number; product_id: number; variant_id: number | null; name: string; slug: string | null; sku: string | null; variant_label: string | null; image_url: string | null; unit_price_usd: string; quantity: number; line_total_usd: string; available: number; issue: null | "unavailable" | "out_of_stock" | "insufficient_stock" }
+export interface CartView { items: CartLine[]; subtotal_usd: string; item_count: number; has_issues: boolean }
+export interface Method { id: number; code: string; name: string; instructions?: string | null }
+export interface Address { id: number; label: string | null; recipient_name: string; phone: string; state: string; municipality: string; full_address: string; reference: string | null; is_default: boolean }
+export interface Summary extends CartView { shipping_usd: string; total_usd: string; address: Omit<Address, "id" | "label" | "is_default">; shipping_method: string; payment_method: string; shipping_note: string | null }
+export interface OrderT { id: number; number: string; status: string; subtotal_usd: string; shipping_usd: string; total_usd: string; created_at: string; reservation_expires_at: string | null; item_count: number;
+  items?: { product_name: string; sku: string; variant: Record<string, string> | null; unit_price_usd: string; quantity: number; line_total_usd: string }[];
+  shipping?: { recipient: string; phone: string; state: string; municipality: string; address: string; reference: string | null; notes: string | null; carrier: string | null };
+  payment_method?: string | null; events?: { status: string; note: string | null; at: string }[] }
+export const STATUS_LABEL: Record<string, string> = { pending_payment: "Pendiente de pago", payment_validation: "Validación de pago", preparing: "Preparando envío", shipped: "Enviado", out_for_delivery: "En ruta de entrega", delivered: "Entregado", cancelled: "Cancelado", returned: "Devuelto" };
+export const fmtDate = (iso: string) => new Date(iso).toLocaleString("es-VE", { timeZone: "America/Caracas", dateStyle: "short", timeStyle: "short" });
+
+export interface Bank { id: number; code: string; name: string }
+export interface PaymentInfo { amount_due_usd: string; method: { code: string; name: string; instructions: string | null; accounts: { bank: string; holder: string; number: string; document?: string | null }[]; usdt_address: string | null; networks: string[] } | null;
+  payment: null | { id: number; status: string; amount_declared_usd: string; reference: string | null; has_proof: boolean; reason: string | null; details: Record<string, string> } }
+export interface NotificationT { id: number; kind: string; audience: string; title: string; body: string | null; order_number: string | null; read: boolean; created_at: string }
+export interface AdminPaymentRow { id: number; order_number: string; created_at: string; customer: string; products: string[]; order_total_usd: string; declared_usd: string; method: string; method_code: string; origin_bank: string | null; receiving_bank: string | null; reference: string | null; has_proof: boolean; status: string; flags: string[] }
+export interface AdminPaymentDetail { id: number; status: string; order_number: string; order_status: string; order_total_usd: string; customer: { name: string; phone: string | null; email: string }; method: string; method_code: string; declared_usd: string; reference: string | null; paid_at: string | null; details: Record<string, unknown> | null; review_reason: string | null; proof_url: string | null; min_confirmations: number | null; events: { action: string; note: string | null; actor: string | null; at: string; detail: Record<string, unknown> | null }[] }
+export const PAY_LABEL: Record<string, string> = { declared: "Declarado", pending_review: "En revisión", approved: "Aprobado", rejected: "Rechazado", needs_info: "Info adicional" };
+export const FLAG_LABEL: Record<string, string> = { duplicate_reference: "Referencia repetida en otro pedido", amount_mismatch: "El importe no coincide con el total", cash_on_delivery_not_collected: "Efectivo contra entrega: aún no cobrado" };

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quantum Store – Vista previa</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f4f6fb;--card:#fff;--text:#18202f;--muted:#5d6779;--primary:#4f46e5;--primary-ink:#fff;--accent:#0ea5a4;--line:#e3e7ef;--warn:#d97706;--ok:#15803d;--bad:#b91c1c;--hdr:#1e1b4b;--hdr-ink:#fff;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1420;--card:#171e2e;--text:#e8ecf5;--muted:#9aa5ba;--primary:#818cf8;--primary-ink:#0f1420;--accent:#2dd4bf;--line:#273049;--warn:#fbbf24;--ok:#4ade80;--bad:#f87171;--hdr:#0b0f1a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1420;--card:#171e2e;--text:#e8ecf5;--muted:#9aa5ba;--primary:#818cf8;--primary-ink:#0f1420;--accent:#2dd4bf;--line:#273049;--warn:#fbbf24;--ok:#4ade80;--bad:#f87171;--hdr:#0b0f1a;color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.note{background:var(--warn);color:#111;text-align:center;padding:6px 10px;font-size:13px}
+header{background:var(--hdr);color:var(--hdr-ink);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.bar{display:flex;gap:12px;align-items:center;padding:10px 16px;max-width:1200px;margin:auto;flex-wrap:wrap}
+.logo{font-weight:800;font-size:20px;display:flex;gap:8px;align-items:center}
+.logo i{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--accent));display:inline-block}
+.search{flex:1;min-width:180px;display:flex}
+.search input{flex:1;padding:10px 12px;border:0;border-radius:8px 0 0 8px;font:inherit;min-width:0}
+.search button{border:0;background:var(--accent);color:#06201f;padding:0 16px;border-radius:0 8px 8px 0;font-weight:700;cursor:pointer}
+.btn{border:0;border-radius:8px;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer;background:var(--primary);color:var(--primary-ink)}
+.btn.ghost{background:transparent;color:inherit;border:1px solid var(--line)}
+header .btn.ghost{border-color:#ffffff44}
+.tabs{display:flex;gap:4px;padding:0 16px;max-width:1200px;margin:auto;overflow-x:auto}
+.tabs button{background:none;border:0;color:#cfd3ff;padding:10px 14px;cursor:pointer;font:inherit;border-bottom:3px solid transparent;white-space:nowrap}
+.tabs button.on{color:#fff;border-color:var(--accent)}
+main{max-width:1200px;margin:auto;padding:16px}
+.cats{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px}
+.cat{flex:0 0 auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;text-align:center;min-width:104px}
+.cat span{display:block;font-size:26px}.cat small{color:var(--muted)}
+.hero{margin:16px 0;border-radius:16px;padding:28px;background:linear-gradient(120deg,var(--primary),var(--accent));color:#fff}
+.hero h1{margin:0 0 6px;font-size:26px}.hero p{margin:0 0 14px;opacity:.95}
+.hero .btn{background:#fff;color:#1e1b4b}
+h2{font-size:18px;margin:22px 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.img{height:130px;display:grid;place-items:center;font-size:52px}
+.body{padding:12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.name{font-weight:600}.price{font-size:18px;font-weight:800}.old{color:var(--muted);text-decoration:line-through;font-size:13px;margin-left:6px;font-weight:400}
+.tag{font-size:12px;padding:2px 8px;border-radius:99px;display:inline-block;width:fit-content}
+.in{background:#15803d22;color:var(--ok)}.low{background:#d9770622;color:var(--warn)}.out{background:#b91c1c22;color:var(--bad)}
+.row{display:flex;gap:8px;margin-top:auto}.row .btn{flex:1;padding:8px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.kpi small{color:var(--muted)}.kpi b{display:block;font-size:24px}.up{color:var(--ok);font-size:13px}.dn{color:var(--bad);font-size:13px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:14px}
+.bars{display:flex;align-items:flex-end;gap:6px;height:140px}.bars div{flex:1;background:var(--primary);border-radius:6px 6px 0 0;min-height:4px}
+.bars.b2 div{background:var(--accent)}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:640px}th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);font-size:14px}th{color:var(--muted);font-weight:600}
+.st{padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600}
+.s-p{background:#d9770622;color:var(--warn)}.s-a{background:#15803d22;color:var(--ok)}.s-r{background:#b91c1c22;color:var(--bad)}
+.tl{list-style:none;padding:0;margin:0}.tl li{display:flex;gap:12px;padding:8px 0;position:relative}
+.tl li i{width:14px;height:14px;border-radius:50%;background:var(--line);margin-top:4px;flex:0 0 14px}.tl li.done i{background:var(--ok)}.tl li.now i{background:var(--primary);box-shadow:0 0 0 4px #4f46e533}
+.tl small{color:var(--muted)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.two{grid-template-columns:1fr}}
+footer{color:var(--muted);text-align:center;padding:24px 16px;font-size:13px}
+.view{display:none}.view.on{display:block}
+</style>
+</head>
+<body>
+<div class="note">Vista previa con datos de ejemplo · todavía no está conectada al backend (el frontend real llega en la Fase 3)</div>
+<header>
+  <div class="bar">
+    <div class="logo"><i></i>Quantum Store</div>
+    <div class="search"><input id="q" placeholder="Buscar productos, marcas…" aria-label="Buscar"><button onclick="filter()">Buscar</button></div>
+    <button class="btn ghost">Mi cuenta</button>
+    <button class="btn ghost">🛒 Carrito (<span id="cnt">0</span>)</button>
+  </div>
+  <nav class="tabs" aria-label="Vistas de la vista previa">
+    <button class="on" data-v="shop">Tienda</button>
+    <button data-v="product">Detalle de producto</button>
+    <button data-v="track">Seguimiento del pedido</button>
+    <button data-v="admin">Panel · Dashboard</button>
+    <button data-v="pay">Panel · Validar pagos</button>
+  </nav>
+</header>
+<main>
+
+<section class="view on" id="v-shop">
+  <div class="cats" id="cats"></div>
+  <div class="hero"><h1>Ofertas de la semana</h1><p>Hasta 30 % menos en tecnología y hogar. Pago móvil, transferencia, efectivo o USDT.</p><button class="btn">Ver ofertas</button></div>
+  <h2>Productos destacados</h2>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section class="view" id="v-product">
+  <div class="two">
+    <div class="card"><div class="img" style="height:300px;font-size:120px;background:#4f46e51a">🎧</div>
+      <div class="body"><div style="display:flex;gap:8px"><div class="img" style="width:64px;height:64px;font-size:28px;background:#4f46e51a;border-radius:8px">🎧</div><div class="img" style="width:64px;height:64px;font-size:28px;background:#0ea5a41a;border-radius:8px">📦</div></div></div></div>
+    <div>
+      <small style="color:var(--muted)">Tecnología y electrónica › Audio</small>
+      <h1 style="margin:4px 0">Auriculares Bluetooth Aura X2</h1>
+      <div class="price" style="font-size:28px">$45.00<span class="old">$60.00</span></div>
+      <p><span class="tag in">Disponible · 18 unidades</span></p>
+      <p>Cancelación de ruido, 30 h de batería, estuche de carga. Garantía de 6 meses.</p>
+      <p><b>Color:</b> <button class="btn ghost" style="color:inherit">Negro</button> <button class="btn ghost" style="color:inherit">Blanco</button></p>
+      <p style="display:flex;gap:8px;align-items:center"><button class="btn ghost" style="color:inherit" onclick="qty(-1)">−</button><b id="qn">1</b><button class="btn ghost" style="color:inherit" onclick="qty(1)">+</button></p>
+      <div class="row"><button class="btn" onclick="add()">Añadir al carrito</button><button class="btn" style="background:var(--accent);color:#06201f">Comprar ahora</button></div>
+      <div class="panel"><b>Envío</b><br><small style="color:var(--muted)">MRW · Zoom · Liberty Express · Tealca. El precio final siempre lo calcula el servidor.</small></div>
+    </div>
+  </div>
+  <div class="panel"><b>Valoraciones de compradores verificados</b><p>★★★★★ <b>Muy buenos</b><br><small style="color:var(--muted)">Compra verificada · 12/10/2026</small></p>
+  <b>Preguntas</b><p>¿Incluye cable USB-C? <br><small style="color:var(--muted)">Respuesta del administrador: Sí, incluye cable y estuche.</small></p></div>
+</section>
+
+<section class="view" id="v-track">
+  <div class="panel"><h2 style="margin-top:0">Pedido QS-000123</h2>
+    <ul class="tl">
+      <li class="done"><i></i><div><b>Validación de pago</b><br><small>20/10/2026 · 10:42 — Pago aprobado por el administrador</small></div></li>
+      <li class="done"><i></i><div><b>Preparando envío</b><br><small>20/10/2026 · 14:05</small></div></li>
+      <li class="done"><i></i><div><b>Enviado</b><br><small>21/10/2026 · 09:30 — MRW · Guía 0045-88213</small></div></li>
+      <li class="now"><i></i><div><b>En ruta de entrega</b><br><small>23/10/2026 · 08:15</small></div></li>
+      <li><i></i><div><b>Entregado</b><br><small>Pendiente: se confirma con un código de un solo uso enviado a tu teléfono</small></div></li>
+    </ul></div>
+</section>
+
+<section class="view" id="v-admin">
+  <div class="kpis">
+    <div class="kpi"><small>Ventas del día</small><b>14</b><span class="up">▲ 3 vs ayer</span></div>
+    <div class="kpi"><small>Ingresos cobrados (mes)</small><b>$8,420</b><span class="up">▲ 12 % vs mes anterior</span></div>
+    <div class="kpi"><small>Pagos por validar</small><b>7</b><span class="dn">2 con más de 24 h</span></div>
+    <div class="kpi"><small>En ruta</small><b>9</b></div>
+    <div class="kpi"><small>Inventario bajo</small><b>5</b></div>
+    <div class="kpi"><small>Clientes</small><b>1,284</b></div>
+  </div>
+  <div class="two">
+    <div class="panel"><b>Ventas por día (últimos 14)</b><div class="bars" id="b1"></div></div>
+    <div class="panel"><b>Ingresos cobrados por mes</b><div class="bars b2" id="b2"></div></div>
+  </div>
+  <p style="color:var(--muted);font-size:13px">En la app real, “ventas” (pedidos creados) e “ingresos” (pagos aprobados) se calculan por separado desde PostgreSQL.</p>
+</section>
+
+<section class="view" id="v-pay">
+  <div class="panel"><b>Centro de validación de pagos</b>
+  <div class="scroll"><table>
+    <thead><tr><th>Pedido</th><th>Cliente</th><th>Método</th><th>Banco</th><th>Referencia</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead>
+    <tbody id="pays"></tbody></table></div>
+  <p style="color:var(--muted);font-size:13px">Una referencia o captura no prueba que el dinero llegó: el pago solo pasa a “aprobado” cuando un administrador lo verifica, y queda registrado quién, cuándo y por qué.</p></div>
+</section>
+</main>
+<footer>Quantum Store · Contacto · Condiciones de compra · Privacidad · Devoluciones</footer>
+
+<script>
+var cats=[["💻","Tecnología"],["📱","Teléfonos"],["🖥️","Computación"],["🏠","Hogar"],["🔌","Electrodomésticos"],["🌸","Perfumes"],["💄","Belleza"],["👟","Ropa y calzado"],["⚽","Deportes"],["🧸","Juguetes"],["🚗","Automotriz"],["🛠️","Herramientas"]];
+var prods=[["🎧","Auriculares Bluetooth Aura X2",45,60,18],["📱","Smartphone Nova S5 128 GB",189,null,4],["⌚","Reloj inteligente Pulse",39,55,22],["🖥️","Monitor 24\" Full HD",129,null,9],["🌸","Perfume Brisa Marina 100 ml",32,null,0],["👟","Zapatillas Runner Pro",58,72,14],["☕","Cafetera Express 15 bar",74,null,7],["🔦","Set de herramientas 120 pzs",49,null,3]];
+var n=0;
+function card(p){var s=p[4]==0?'<span class="tag out">Agotado</span>':p[4]<5?'<span class="tag low">Quedan '+p[4]+'</span>':'<span class="tag in">Disponible</span>';
+return '<div class="card"><div class="img" style="background:#4f46e514">'+p[0]+'</div><div class="body"><div class="name">'+p[1]+'</div><div class="price">$'+p[2].toFixed(2)+(p[3]?'<span class="old">$'+p[3].toFixed(2)+'</span>':'')+'</div>'+s+'<div class="row"><button class="btn ghost" style="color:inherit" onclick="go(\'product\')">Ver</button><button class="btn" '+(p[4]==0?'disabled style="opacity:.5"':'')+' onclick="add()">＋ Carrito</button></div></div></div>';}
+function render(list){document.getElementById("grid").innerHTML=list.map(card).join("")||"<p>Sin resultados.</p>";}
+function filter(){var q=document.getElementById("q").value.toLowerCase();render(prods.filter(function(p){return p[1].toLowerCase().indexOf(q)>-1}));go("shop");}
+document.getElementById("q").addEventListener("keydown",function(e){if(e.key==="Enter")filter()});
+document.getElementById("cats").innerHTML=cats.map(function(c){return '<div class="cat"><span>'+c[0]+'</span><small>'+c[1]+'</small></div>'}).join("");
+function add(){n+=parseInt(document.getElementById("qn").textContent)||1;document.getElementById("cnt").textContent=n;}
+function qty(d){var e=document.getElementById("qn");e.textContent=Math.max(1,(+e.textContent)+d);}
+function go(v){document.querySelectorAll(".view").forEach(function(e){e.classList.toggle("on",e.id==="v-"+v)});document.querySelectorAll(".tabs button").forEach(function(b){b.classList.toggle("on",b.dataset.v===v)});window.scrollTo(0,0);}
+document.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){go(b.dataset.v)}});
+function bars(id,arr){var m=Math.max.apply(null,arr);document.getElementById(id).innerHTML=arr.map(function(v){return '<div style="height:'+Math.round(v/m*100)+'%"></div>'}).join("");}
+bars("b1",[6,9,7,12,10,14,11,8,13,15,12,16,11,14]);bars("b2",[3200,4100,3800,5200,6100,7500,8420]);
+var pays=[["QS-000131","María G.","Pago móvil","Banesco → Mercantil","00458213","$45.00","p"],["QS-000130","Luis R.","Transferencia","BNC","77120934","$189.00","p"],["QS-000129","Ana P.","USDT (TRC20)","—","a91f…c2e0","$74.00","p"],["QS-000128","José M.","Efectivo","—","—","$32.00","a"],["QS-000127","Carla S.","Pago móvil","Provincial","00991editar","$58.00","r"]];
+pays[4][4]="00991207";
+var L={p:["Pendiente de revisión","s-p"],a:["Aprobado","s-a"],r:["Rechazado","s-r"]};
+function paint(){document.getElementById("pays").innerHTML=pays.map(function(r,i){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td><td>'+r[4]+'</td><td>'+r[5]+'</td><td><span class="st '+L[r[6]][1]+'">'+L[r[6]][0]+'</span></td><td>'+(r[6]=="p"?'<button class="btn" style="padding:5px 10px" onclick="dec('+i+',\'a\')">Aprobar</button> <button class="btn ghost" style="padding:5px 10px;color:inherit" onclick="dec('+i+',\'r\')">Rechazar</button>':'—')+'</td></tr>'}).join("");}
+function dec(i,s){pays[i][6]=s;paint();}
+paint();render(prods);
+</script>
+</body>
+</html>
